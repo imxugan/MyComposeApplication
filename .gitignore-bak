@@ -1,0 +1,128 @@
+# ============================================================================
+# 1. 操作系统与编辑器通用临时文件
+#    （避免因本地环境差异造成无意义的文件变更）
+# ============================================================================
+
+# macOS 系统文件
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows 系统文件
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# 常见编辑器（Vim、Emacs、Sublime等）自动生成的备份文件
+*.swp
+*.swo
+*~
+
+# ============================================================================
+# 2. 构建输出与缓存（GitHub 官方 Android 模板完整版）
+#    （自动生成的文件，提交会导致冲突和仓库膨胀）
+# ============================================================================
+
+# Android 构建产物
+*.apk          # 安装包
+*.aar          # Android Archive（模块输出）
+*.ap_          # 未签名的中间包
+*.aab          # Android App Bundle
+
+# ART/Dalvik 字节码文件
+*.dex
+
+# Java / Kotlin 编译后的字节码
+*.class
+
+# 构建输出目录（Eclipse / 旧版工具）
+bin/
+gen/
+out/
+
+# Gradle 缓存和构建目录
+.gradle/
+build/
+
+# Kotlin 编译缓存（KMP 通用）
+.kotlin/
+.kotlin-js-store/   # Kotlin/JS 编译缓存
+
+# NDK / CMake 构建输出
+.cxx/
+.externalNativeBuild/
+
+# ProGuard 输出目录（Eclipse 时代遗留，极少使用）
+proguard/
+
+# ============================================================================
+# 3. IDE 相关配置（Android Studio / IntelliJ）
+#    （避免团队中 IDE 配置差异导致冲突）
+# ============================================================================
+
+*.iml                 # 模块文件
+.idea/                # 项目配置目录（包含 workspace.xml 等全部）
+local.properties      # 本地 SDK 路径（每台机器不同）
+
+# ============================================================================
+# 4. 敏感信息（安全关键，必须忽略）
+# ============================================================================
+
+*.jks                 # Java 密钥库（签名证书）
+*.keystore            # Android 签名密钥文件
+google-services.json  # Firebase / GMS 配置文件（含 API 密钥）
+
+# ============================================================================
+# 5. 特定工具相关（按项目实际使用情况保留）
+# ============================================================================
+
+# ---------- Freeline（已过时的热修复工具）----------
+freeline.py
+freeline/
+freeline_project_description.json
+
+# ---------- fastlane（自动化打包工具）----------
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+fastlane/readme.md
+
+# ---------- Lint 检查输出----------
+lint/intermediates/
+lint/generated/
+lint/outputs/
+lint/tmp/
+# lint/reports/   # 若需保留 Lint 报告，可取消注释
+
+# ---------- Capacitor（混合应用框架）----------
+capacitor-cordova-android-plugins
+app/src/main/assets/public
+app/src/main/assets/capacitor.config.json
+app/src/main/assets/capacitor.plugins.json
+app/src/main/res/xml/config.xml
+
+# ============================================================================
+# 6. 其他临时文件与日志
+# ============================================================================
+
+*.log                 # 日志文件
+*.hprof               # Android Studio 内存快照
+captures/             # Android Studio 截图保存目录
+.navigation/          # 导航编辑器临时文件
+output-metadata.json  # 构建元数据
+vcs.xml               # IntelliJ 版本控制配置（已被 .idea/ 覆盖，显式列出无妨）
+
+# ============================================================================
+# 7. KMP 跨平台项目专用：iOS 相关文件
+#    （若项目不含 iOS 目标，此部分可删除）
+# ============================================================================
+
+**/iosApp/Pods/                           # CocoaPods 依赖目录（推荐忽略）
+**/iosApp/*.xcworkspace                   # Xcode workspace 文件
+**/iosApp/*.xcodeproj/project.xcworkspace/ # workspace 缓存
+**/iosApp/*.xcodeproj/xcuserdata/         # 用户数据（断点、窗口布局）
+**/iosApp/*.xcodeproj/project.pbxproj     # Xcode 工程文件（极易冲突）
+**/iosApp/iosApp.xcworkspace/             # 应用级别的 workspace
+**/iosApp/*.xcuserstate                   # 用户状态文件
+**/iosApp/UserInterfaceState.xcuserstate  # UI 状态（如打开的文件）
