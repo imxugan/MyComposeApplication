@@ -110,3 +110,24 @@ dependencies {
     debugImplementation libs.androidx.ui.tooling
     debugImplementation libs.androidx.ui.test.manifest
 }
+
+// 设置覆盖率质量门禁（低于阈值构建失败）
+tasks.register('jacocoTestCoverageVerification', JacocoCoverageVerification) {
+    dependsOn createDebugCombinedCoverageReport
+    violationRules {
+        rule {
+            limit {
+                counter = 'INSTRUCTION'
+                minimum = 0.80
+            }
+        }
+    }
+    // 使用 layout.buildDirectory 替代 buildDir
+    // project.layout.buildDirectory 代表的是：
+    // 【使用这个插件的那个模块】的 build/ 目录
+    executionData = fileTree(dir: layout.buildDirectory.get().asFile, includes: ['jacoco/testDebugUnitTest.exec'])
+    sourceDirectories = files(['src/main/java'])
+    classDirectories = fileTree(dir: layout.buildDirectory.dir("tmp/kotlin-classes/debug").get().asFile, excludes: [
+            '**/R.class', '**/R$*.class', '**/BuildConfig.*'
+    ])
+}
