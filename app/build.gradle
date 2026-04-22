@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+
+    id 'jacoco'   // JaCoCo 测试覆盖率工具版本
 }
 
 // 读取 local.properties 文件（用于本地开发签名）
@@ -60,6 +62,9 @@ android {
     }
 
     buildTypes {
+        debug {
+            testCoverageEnabled true
+        }
         release {
             // 使用上面的签名配置
             signingConfig signingConfigs.release
