@@ -50,6 +50,15 @@ android {
         }
     }
 
+    lintOptions {
+        checkDependencies true      // 核心功能：检查所有依赖的模块
+        abortOnError true           // 遇到错误时中止构建，强制CI失败
+        warningsAsErrors false      // warningsAsErrors false 是默认值，警告不视为错误（可根据需要改为 true）
+        htmlReport true             // 生成HTML报告
+        xmlReport false             // 不生成XML报告（如果你不需要）
+        htmlOutput file("build/reports/lint/lint-result.html")      // 指定最终报告的输出位置，方便Jenkins归档
+    }
+
     buildTypes {
         release {
             // 使用上面的签名配置
