@@ -15,10 +15,10 @@ desktop.ini
 
 
 
-*.apk          # 安装包
-*.aar          # Android Archive（模块输出）
-*.ap_          # 未签名的中间包
-*.aab          # Android App Bundle
+*.apk
+*.aar
+*.ap_
+*.aab
 
 
 *.dex
@@ -34,6 +34,7 @@ out/
 
 .gradle/
 build/
+app/release/
 
 
 .kotlin/
