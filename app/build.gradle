@@ -38,7 +38,7 @@ android {
                 // Jenkins 构建：使用环境变量
                 storeFile file(keystoreFileEnv)
                 storePassword keystorePwdEnv
-                keyAlias "keyo"
+                keyAlias "key0"
                 keyPassword keyPwdEnv
             } else {
                 // 本地构建：从 local.properties 读取
