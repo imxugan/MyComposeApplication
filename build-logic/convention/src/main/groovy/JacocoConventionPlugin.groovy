@@ -36,7 +36,7 @@ class JacocoConventionPlugin implements Plugin<Project> {
                     task.dependsOn "test${variantName}UnitTest"
                     task.reports {
                         html.required = true
-                        xml.required = false
+                        xml.required = true     // 关键：diff-cover 需要解析 XML 格式的报告
                     }
                     task.sourceDirectories.from = project.files(
                             project.file("src/main/java"),
