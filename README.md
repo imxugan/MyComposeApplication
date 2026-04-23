@@ -4,18 +4,31 @@
 
 # 项目的关键版本信息
 AGP: 8.5.0
+
 Gradle: 8.7
+
 compileSdk: 34
+
 minSdk: 24
+
 Gradle JDK: 17
+
 Kotlin: 1.9.0
+
 kotlin.jvmTarget: 1.8
+
 Java sourceCompatibility: 1.8      // 可选，但推荐
+
 Java targetCompatibility: 1.8      // 可选，但推荐
+
 AndroidX Core: 1.10.1
+
 AndroidX Lifecycle: 2.6.1
+
 Compose: 1.6.0 (如果使用)
+
 KSP:  (如果未使用则留空 , 如果使用  填写示例   1.9.23-1.0.19 )
+
 NDK:  ((如果未使用则留空 , 如果涉及原生，填写示例  26.1.10909125 )
 
 
