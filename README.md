@@ -13,17 +13,19 @@ minSdk: 24
 
 Gradle JDK: 17
 
-Kotlin: 1.9.0
+Kotlin: 1.9.23
 
-kotlin.jvmTarget: 1.8
+kotlin.jvmTarget: 17
 
-Java sourceCompatibility: 1.8      // 可选，但推荐
+Java sourceCompatibility: 17      // 可选，但推荐
 
-Java targetCompatibility: 1.8      // 可选，但推荐
+Java targetCompatibility: 17      // 可选，但推荐
 
-AndroidX Core: 1.10.1
+AndroidX Core: 1.13.0
 
-AndroidX Lifecycle: 2.6.1
+AndroidX Lifecycle: 2.8.4
+
+kotlinCompilerExtensionVersion: 1.5.13
 
 Compose: 1.6.0 (如果使用)
 
