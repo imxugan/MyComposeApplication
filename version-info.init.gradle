@@ -1,0 +1,139 @@
+// version-info.init.gradle
+// 使用 Groovy DSL 编写的独立脚本，不修改项目任何构建文件
+// 作用是 打印当前项目的 关键版本信息
+//使用方法
+//将上述代码保存为 version-info.init.gradle（放在项目根目录或任意固定位置）。
+//
+//在终端中执行：
+//
+//bash
+//        ./gradlew --init-script version-info.init.gradle printProjectInfo
+//Windows 用户使用：
+//
+//bash
+//gradlew.bat --init-script version-info.init.gradle printProjectInfo
+
+// version-info.init.gradle（优化版）
+// 只在根项目注册任务，避免重复执行
+gradle.rootProject {
+    tasks.register('printProjectInfo') {
+        doLast {
+            println "\n--- Android 项目配置信息 ---"
+
+            // 1. 解析 libs.versions.toml（同前，省略...）
+            def tomlFile = rootProject.file('gradle/libs.versions.toml')
+            if (tomlFile.exists()) {
+                println "📁 从 gradle/libs.versions.toml 读取:"
+                def tomlText = tomlFile.text
+                def agpMatch = tomlText =~ /agp\s*=\s*"([^"]+)"/
+                if (agpMatch.find()) println "  - AGP: ${agpMatch.group(1)}"
+                def kotlinMatch = tomlText =~ /kotlin\s*=\s*"([^"]+)"/
+                if (kotlinMatch.find()) println "  - Kotlin: ${kotlinMatch.group(1)}"
+                def coreKtxMatch = tomlText =~ /coreKtx\s*=\s*"([^"]+)"/
+                if (coreKtxMatch.find()) println "  - AndroidX Core: ${coreKtxMatch.group(1)}"
+                def lifecycleMatch = tomlText =~ /lifecycleRuntimeKtx\s*=\s*"([^"]+)"/
+                if (lifecycleMatch.find()) println "  - AndroidX Lifecycle: ${lifecycleMatch.group(1)}"
+                def composeBomMatch = tomlText =~ /composeBom\s*=\s*"([^"]+)"/
+                if (composeBomMatch.find()) println "  - Compose BOM: ${composeBomMatch.group(1)}"
+            } else {
+                println "⚠️ 未找到 gradle/libs.versions.toml"
+            }
+
+            // 2. 遍历所有 Android 模块，提取干净的数字版本
+            rootProject.subprojects { sub ->
+                def android = sub.extensions.findByName('android')
+                if (android == null) return
+
+                println "\n📱 模块: ${sub.name}"
+
+                // compileSdk - 尝试多种方式获取数字
+                def compileSdkValue = null
+                if (android.hasProperty('compileSdkVersion')) {
+                    compileSdkValue = android.compileSdkVersion
+                } else if (android.hasProperty('compileSdk')) {
+                    compileSdkValue = android.compileSdk
+                }
+                if (compileSdkValue != null) {
+                    // 如果是 "android-34" 格式，提取数字
+                    def match = (compileSdkValue as String) =~ /android-(\d+)/
+                    if (match.find()) compileSdkValue = match.group(1)
+                    println "  - compileSdk: ${compileSdkValue}"
+                }
+
+                // defaultConfig
+                def defaultConfig = android.defaultConfig
+                if (defaultConfig) {
+                    // minSdk
+                    def minSdkValue = null
+                    if (defaultConfig.hasProperty('minSdkVersion')) {
+                        minSdkValue = defaultConfig.minSdkVersion
+                    } else if (defaultConfig.hasProperty('minSdk')) {
+                        minSdkValue = defaultConfig.minSdk
+                    }
+                    if (minSdkValue != null) {
+                        if (minSdkValue.toString().startsWith('DefaultApiVersion')) {
+                            def match = minSdkValue.toString() =~ /mApiLevel=(\d+)/
+                            if (match.find()) minSdkValue = match.group(1)
+                        }
+                        println "  - minSdk: ${minSdkValue}"
+                    }
+                    // targetSdk
+                    def targetSdkValue = null
+                    if (defaultConfig.hasProperty('targetSdkVersion')) {
+                        targetSdkValue = defaultConfig.targetSdkVersion
+                    } else if (defaultConfig.hasProperty('targetSdk')) {
+                        targetSdkValue = defaultConfig.targetSdk
+                    }
+                    if (targetSdkValue != null) {
+                        if (targetSdkValue.toString().startsWith('DefaultApiVersion')) {
+                            def match = targetSdkValue.toString() =~ /mApiLevel=(\d+)/
+                            if (match.find()) targetSdkValue = match.group(1)
+                        }
+                        println "  - targetSdk: ${targetSdkValue}"
+                    }
+                }
+
+                // compileOptions
+                def compileOptions = android.compileOptions
+                if (compileOptions) {
+                    println "  - sourceCompatibility: ${compileOptions.sourceCompatibility}"
+                    println "  - targetCompatibility: ${compileOptions.targetCompatibility}"
+                }
+
+                // kotlinOptions
+                def kotlinOptions = android.kotlinOptions
+                if (kotlinOptions && kotlinOptions.hasProperty('jvmTarget')) {
+                    println "  - kotlin.jvmTarget: ${kotlinOptions.jvmTarget}"
+                }
+
+                // Compose
+                def buildFeatures = android.buildFeatures
+                if (buildFeatures && buildFeatures.compose == true) {
+                    println "  - Compose: 已启用"
+                    def composeOptions = android.composeOptions
+                    if (composeOptions && composeOptions.hasProperty('kotlinCompilerExtensionVersion')) {
+                        println "  - kotlinCompilerExtensionVersion: ${composeOptions.kotlinCompilerExtensionVersion}"
+                    }
+                }
+            }
+
+            // 3. 系统环境
+            println "\n💻 系统环境:"
+            println "  - Gradle JDK: ${System.getProperty('java.version')} (${System.getProperty('java.vendor')})"
+            println "  - OS: ${System.getProperty('os.name')} ${System.getProperty('os.version')}"
+
+            // 4. Gradle Wrapper 版本
+            def wrapperProps = rootProject.file('gradle/wrapper/gradle-wrapper.properties')
+            if (wrapperProps.exists()) {
+                def props = new Properties()
+                wrapperProps.withInputStream { props.load(it) }
+                def url = props.getProperty('distributionUrl')
+                if (url) {
+                    def gradleVersion = url.substring(url.lastIndexOf('/') + 1).replace('-bin', '').replace('-all', '')
+                    println "  - Gradle Wrapper: ${gradleVersion}"
+                }
+            }
+            println "\n--- 信息打印完毕 ---"
+        }
+    }
+}
