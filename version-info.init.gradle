@@ -15,15 +15,16 @@
 
 // version-info.init.gradle（优化版）
 // 只在根项目注册任务，避免重复执行
+// version-info.init.gradle (English version, no Chinese characters)
 gradle.rootProject {
     tasks.register('printProjectInfo') {
         doLast {
-            println "\n--- Android 项目配置信息 ---"
+            println "\n--- Android Project Configuration ---"
 
-            // 1. 解析 libs.versions.toml（同前，省略...）
+            // 1. Parse libs.versions.toml
             def tomlFile = rootProject.file('gradle/libs.versions.toml')
             if (tomlFile.exists()) {
-                println "📁 从 gradle/libs.versions.toml 读取:"
+                println "[INFO] From gradle/libs.versions.toml:"
                 def tomlText = tomlFile.text
                 def agpMatch = tomlText =~ /agp\s*=\s*"([^"]+)"/
                 if (agpMatch.find()) println "  - AGP: ${agpMatch.group(1)}"
@@ -36,17 +37,17 @@ gradle.rootProject {
                 def composeBomMatch = tomlText =~ /composeBom\s*=\s*"([^"]+)"/
                 if (composeBomMatch.find()) println "  - Compose BOM: ${composeBomMatch.group(1)}"
             } else {
-                println "⚠️ 未找到 gradle/libs.versions.toml"
+                println "[WARN] gradle/libs.versions.toml not found"
             }
 
-            // 2. 遍历所有 Android 模块，提取干净的数字版本
+            // 2. Parse Android modules
             rootProject.subprojects { sub ->
                 def android = sub.extensions.findByName('android')
                 if (android == null) return
 
-                println "\n📱 模块: ${sub.name}"
+                println "\n[Module] ${sub.name}"
 
-                // compileSdk - 尝试多种方式获取数字
+                // compileSdk
                 def compileSdkValue = null
                 if (android.hasProperty('compileSdkVersion')) {
                     compileSdkValue = android.compileSdkVersion
@@ -54,7 +55,6 @@ gradle.rootProject {
                     compileSdkValue = android.compileSdk
                 }
                 if (compileSdkValue != null) {
-                    // 如果是 "android-34" 格式，提取数字
                     def match = (compileSdkValue as String) =~ /android-(\d+)/
                     if (match.find()) compileSdkValue = match.group(1)
                     println "  - compileSdk: ${compileSdkValue}"
@@ -63,7 +63,6 @@ gradle.rootProject {
                 // defaultConfig
                 def defaultConfig = android.defaultConfig
                 if (defaultConfig) {
-                    // minSdk
                     def minSdkValue = null
                     if (defaultConfig.hasProperty('minSdkVersion')) {
                         minSdkValue = defaultConfig.minSdkVersion
@@ -77,7 +76,7 @@ gradle.rootProject {
                         }
                         println "  - minSdk: ${minSdkValue}"
                     }
-                    // targetSdk
+
                     def targetSdkValue = null
                     if (defaultConfig.hasProperty('targetSdkVersion')) {
                         targetSdkValue = defaultConfig.targetSdkVersion
@@ -109,7 +108,7 @@ gradle.rootProject {
                 // Compose
                 def buildFeatures = android.buildFeatures
                 if (buildFeatures && buildFeatures.compose == true) {
-                    println "  - Compose: 已启用"
+                    println "  - Compose: enabled"
                     def composeOptions = android.composeOptions
                     if (composeOptions && composeOptions.hasProperty('kotlinCompilerExtensionVersion')) {
                         println "  - kotlinCompilerExtensionVersion: ${composeOptions.kotlinCompilerExtensionVersion}"
@@ -117,12 +116,12 @@ gradle.rootProject {
                 }
             }
 
-            // 3. 系统环境
-            println "\n💻 系统环境:"
+            // 3. System environment
+            println "\n[System Environment]"
             println "  - Gradle JDK: ${System.getProperty('java.version')} (${System.getProperty('java.vendor')})"
             println "  - OS: ${System.getProperty('os.name')} ${System.getProperty('os.version')}"
 
-            // 4. Gradle Wrapper 版本
+            // 4. Gradle Wrapper version
             def wrapperProps = rootProject.file('gradle/wrapper/gradle-wrapper.properties')
             if (wrapperProps.exists()) {
                 def props = new Properties()
@@ -133,7 +132,7 @@ gradle.rootProject {
                     println "  - Gradle Wrapper: ${gradleVersion}"
                 }
             }
-            println "\n--- 信息打印完毕 ---"
+            println "\n--- End of Configuration ---"
         }
     }
 }

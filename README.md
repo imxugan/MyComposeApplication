@@ -11,15 +11,15 @@ compileSdk: 34
 
 minSdk: 24
 
-Gradle JDK: 17
+Gradle JDK: 21
 
 Kotlin: 1.9.23
 
-kotlin.jvmTarget: 17
+kotlin.jvmTarget: 21
 
-Java sourceCompatibility: 17      // 可选，但推荐
+Java sourceCompatibility: 21      // 可选，但推荐
 
-Java targetCompatibility: 17      // 可选，但推荐
+Java targetCompatibility: 21      // 可选，但推荐
 
 AndroidX Core: 1.13.0
 
