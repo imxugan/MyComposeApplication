@@ -3,15 +3,11 @@ plugins {
     id 'groovy-gradle-plugin'   // 用于开发 Gradle 插件的 Groovy 支持
 }
 
-repositories {
-    gradlePluginPortal()
-    google()
-    mavenCentral()
-}
-
 dependencies {
     // 如果需要在插件中访问 Android Gradle Plugin 的类型，可以添加
     // compileOnly 'com.android.tools.build:gradle:8.5.0'
+
+    compileOnly(libs.spotless.gradlePlugin)
 }
 
 gradlePlugin {
@@ -19,6 +15,16 @@ gradlePlugin {
         jacocoConvention {
             id = 'com.xg.mycomposeapplication.jacoco.convention'
             implementationClass = 'JacocoConventionPlugin'
+        }
+
+        spotless {
+            id = "com.xg.spotless.convention"
+            implementationClass = "SpotlessConventionPlugin"
+        }
+
+        root {
+            id = 'com.xg.mycomposeapplication.root.convention'
+            implementationClass = 'RootConventionPlugin'
         }
     }
 }

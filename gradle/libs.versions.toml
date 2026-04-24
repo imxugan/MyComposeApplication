@@ -9,6 +9,12 @@ lifecycleRuntimeKtx = "2.8.4"
 activityCompose = "1.8.0"
 composeBom = "2024.04.01"
 
+# 代码格式化与规范检查工具 Spotless 版本
+spotless = "6.25.0"
+appcompat = "1.7.1"
+material = "1.10.0"
+
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -24,8 +30,27 @@ androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+# Spotless Gradle 插件的“构建期依赖”（plugin artifact）
+# 作用：
+# 1️⃣ 提供插件的实现类（classpath），供 build-logic 中的自定义插件使用
+# 2️⃣ 通常配合 compileOnly 使用（不打包进最终产物）
+# 3️⃣ 用于在 Convention Plugin 中调用：
+#    pluginManager.apply("com.diffplug.spotless")
+#
+# ⚠️ 注意：
+# - 这里只是“依赖坐标（artifact）”，不是插件别名
+# - 不能用于 plugins {}，只能用于 dependencies {}
+# - 对应的插件别名应在 [plugins] 中单独声明
+spotless-gradlePlugin = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version.ref = "spotless" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+
+# 全自动代码格式化插件（统一团队代码风格，支持Kotlin/Java/XML等）
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+
 

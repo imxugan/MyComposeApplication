@@ -21,4 +21,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "MyComposeApplication"
 include ':app'
-includeBuild 'build-logic'
+includeBuild("build-logic")
+include ':feature:test'

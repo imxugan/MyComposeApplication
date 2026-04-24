@@ -14,34 +14,35 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.xg.mycomposeapplication.ui.theme.MyComposeApplicationTheme
 
 class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            MyComposeApplicationTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    enableEdgeToEdge()
+    setContent {
+      MyComposeApplicationTheme {
+        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+          Greeting(
+            name = "Android",
+            modifier = Modifier.padding(innerPadding),
+          )
         }
+      }
     }
+  }
 }
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = GreetingMessage.build(name),   // 调用纯函数
-        modifier = modifier
-    )
+  Text(
+    // 调用纯函数
+    text = GreetingMessage.build(name),
+    modifier = modifier,
+  )
 }
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    MyComposeApplicationTheme {
-        Greeting("Android")
-    }
+  MyComposeApplicationTheme {
+    Greeting("Android")
+  }
 }

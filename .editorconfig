@@ -1,0 +1,35 @@
+# .editorconfig
+# 作用：统一所有开发者、所有 IDE 的代码格式规范（缩进、编码、换行、结尾空行等）
+# 优先级：高于 IDE 本地设置，确保团队代码风格完全一致
+
+# ====================== 全局根配置 ======================
+# 标记为项目根配置，让 IDE 不再向上查找其他 .editorconfig
+root = true
+
+# ====================== 所有文件通用规则 ======================
+[*]
+# 文件编码统一使用 UTF-8（避免中文乱码）
+charset = utf-8
+
+# 换行符统一使用 LF（Linux/macOS 标准），禁止 CRLF（Windows 标准）
+# 重要：Git 协作必须统一，否则会出现大量换行符变更提交
+end_of_line = lf
+
+# 文件末尾自动插入一个空行（代码规范标准要求）
+insert_final_newline = true
+
+# 缩进风格：使用空格（space），而非 Tab
+indent_style = space
+
+# 缩进大小：统一 2 个空格（Kotlin 官方标准缩进）
+indent_size = 2
+
+# ====================== Kotlin 代码专用规则 ======================
+[*.{kt,kts}]
+# 单行代码最大长度：120 字符（超过会自动换行/提示）
+max_line_length = 120
+
+# ====================== ktlint 规则 ======================
+# 关闭 ktlint 对 Kotlin 文件名的严格检查（允许文件使用非大驼峰命名）。
+# 对应 Spotless 插件里的配置：ktlint_standard_filename = disabled
+ktlint_standard_filename = disabled

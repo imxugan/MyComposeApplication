@@ -5,4 +5,8 @@ plugins {
 
     id 'com.xg.mycomposeapplication.jacoco.convention' apply false // 声明插件，但不应用到根项目
 
+    alias(libs.plugins.spotless) apply false
+
+    id "com.xg.mycomposeapplication.root.convention"
+  alias(libs.plugins.android.library) apply false
 }

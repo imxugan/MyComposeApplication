@@ -1,4 +1,4 @@
-package com.xg.mycomposeapplication
+package com.xg.mycomposeapplication.feature.test
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
