@@ -52,7 +52,7 @@ proguard/
 *.iml
 .idea/
 local.properties
-
+.claude/
 
 
 *.jks
