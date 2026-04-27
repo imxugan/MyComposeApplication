@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         ANDROID_HOME = '/opt/android-sdk'
+        // 完全重写 PATH，确保 Android SDK 工具和系统命令可用
         PATH = "${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/cmdline-tools/latest/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
         GRADLE_OPTS = '-Xmx4g -Dfile.encoding=UTF-8'
         CI = 'true'
@@ -13,27 +14,47 @@ pipeline {
             steps { checkout scm }
         }
 
-        stage('Setup Signing & Build') {
+        stage('Build and Verify') {
             steps {
                 withCredentials([
                     file(credentialsId: 'KEYSTORE_FILE', variable: 'KEYSTORE_FILE'),
                     string(credentialsId: 'KEYSTORE_PWD', variable: 'KEYSTORE_PWD'),
                     string(credentialsId: 'KEY_PWD', variable: 'KEY_PWD')
                 ]) {
+                    // 1. 修复权限（必须第一条）
+                    sh 'chmod +x ./gradlew'
+
+                    // 2. 清理
                     sh './gradlew clean --no-configuration-cache'
+
+                    // 3. 代码格式检查
                     sh './gradlew spotlessCheck'
+
+                    // 4. Lint 检查
                     sh './gradlew lint'
+
+                    // 5. 静态分析
                     sh './gradlew detekt'
+
+                    // 6. OWASP 依赖漏洞扫描
                     sh './gradlew dependencyCheckAnalyze'
+
+                    // 7. 编译 Debug 包（测试覆盖率需要 debug build）
                     sh './gradlew assembleDebug'
+
+                    // 8. 运行单元测试并生成覆盖率报告
                     sh './gradlew createDebugCombinedCoverageReport'
+
+                    // 9. 增量覆盖率检查（只检查本次变更代码）
                     sh '''
                         TARGET_BRANCH="origin/main"
-                        diff-cover app/build/reports/jacoco/createDebugCombinedCoverageReport/createDebugCombinedCoverageReport.xml \
-                            --compare-branch $TARGET_BRANCH \
-                            --fail-under=80 \
+                        diff-cover app/build/reports/jacoco/createDebugCombinedCoverageReport/createDebugCombinedCoverageReport.xml \\
+                            --compare-branch $TARGET_BRANCH \\
+                            --fail-under=80 \\
                             --src-roots "src/main/java"
                     '''
+
+                    // 10. 全量覆盖率验证（行覆盖率，阈值 80%）
                     sh '''
                         REPORT="app/build/reports/jacoco/createDebugCombinedCoverageReport/createDebugCombinedCoverageReport.xml"
                         if [ ! -f "$REPORT" ]; then
@@ -55,12 +76,17 @@ pipeline {
                             exit 1
                         fi
                     '''
+
+                    // 11. 构建 Release 包（签名信息由环境变量提供）
                     sh './gradlew assembleRelease'
                 }
             }
         }
     }
+
     post {
-        always { cleanWs() }
+        always {
+            cleanWs()
+        }
     }
 }
