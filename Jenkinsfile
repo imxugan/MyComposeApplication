@@ -98,7 +98,13 @@ pipeline {
         }
 
         stage('Release Build') {
-            steps { sh './gradlew assembleRelease' }
+            withCredentials([
+                file(credentialsId: 'my-release-keystore', variable: 'KEYSTORE_FILE'),
+                string(credentialsId: 'my-release-store-password', variable: 'KEYSTORE_PWD'),
+                string(credentialsId: 'my-release-key-password', variable: 'KEY_PWD')
+            ]) {
+                sh './gradlew assembleRelease'
+            }
         }
     }
 
