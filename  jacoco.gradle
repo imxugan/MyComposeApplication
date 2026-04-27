@@ -1,0 +1,32 @@
+apply plugin: 'jacoco'
+
+jacoco {
+  toolVersion = "0.8.12"
+}
+
+tasks.withType(Test) {
+  jacoco.includeNoLocationClasses = true
+  jacoco.excludes = ['**/di/**', '**/model/**', '**/ui/theme/**']
+}
+
+task jacocoTestReport(type: JacocoReport, dependsOn: testDebug) {
+  reports {
+    xml.required = true
+    html.required = true
+  }
+
+  def fileFilter = [
+    '**/R.class', '**/R$*.class', '**/BuildConfig.*',
+    '**/Manifest*.*', '**/di/*', '**/ui/theme/*',
+    '**/*Application*.*', '**/*Activity*.*'
+  ]
+
+  def debugTree = fileTree(dir: "${buildDir}/intermediates/classes/debug", excludes: fileFilter)
+  def mainSrc = "${project.projectDir}/src/main/java"
+
+  sourceDirectories.from files([mainSrc])
+  classDirectories.from files([debugTree])
+  executionData.from fileTree(dir: project.buildDir, includes: [
+    'outputs/unit_test_code_coverage/debugUnitTest/testDebug.exec'
+  ])
+}

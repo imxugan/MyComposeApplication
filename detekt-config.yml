@@ -1,0 +1,43 @@
+buildUponDefaultConfig: true
+baseline: detekt-baseline.xml
+
+complexity:
+  LongMethod:
+    active: true
+    threshold: 30
+  LongParameterList:
+    active: true
+    threshold: 5
+  LoopDependencyInModules:
+    active: true
+
+coroutines:
+  active: true
+  RedundantSuspendModifier:
+    active: true
+
+exceptions:
+  TooGenericExceptionCaught:
+    active: true
+  SwallowedException:
+    active: true
+
+naming:
+  ClassNaming:
+    active: true
+  FunctionNaming:
+    active: true
+
+performance:
+  UnnecessaryCollectionOperation:
+    active: true
+  UnnecessaryIteratorCall:
+    active: true
+
+style:
+  UnusedImport:
+    active: true
+  UnusedVariable:
+    active: true
+  MagicNumber:
+    active: false
