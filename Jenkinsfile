@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         ANDROID_HOME = '/opt/android-sdk'
-        PATH = "${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/cmdline-tools/latest/bin:${env.PATH}"
+        PATH = "${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/cmdline-tools/latest/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
         GRADLE_OPTS = '-Xmx4g -Dfile.encoding=UTF-8'
         CI = 'true'
     }
