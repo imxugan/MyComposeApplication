@@ -1,101 +1,116 @@
-
+# Operating system generated files
 .DS_Store
 .AppleDouble
 .LSOverride
-
-
 Thumbs.db
 ehthumbs.db
 desktop.ini
 
-
+# Editor temporary files
 *.swp
 *.swo
 *~
+*.tmp
+*.bak
 
+# IDE and editor settings
+.idea/
+*.iml
+.vscode/
 
+# Build and dependency directories
+.gradle/
+**/build/
+!gradle/wrapper/gradle-wrapper.jar
+!buildSrc/
+.kotlin/
+.kotlin-js-store/
+.cxx/
+.externalNativeBuild/
+externalNativeBuild/
+cmake/
+prebuilt/
+jniLibs/obj/
+proguard/
+app/release/
 
+# Compiled outputs
 *.apk
 *.aar
 *.ap_
 *.aab
-
-
 *.dex
-
-
 *.class
-
-
 bin/
 gen/
 out/
+*.so
 
-
-.gradle/
-build/
-app/release/
-
-
-.kotlin/
-.kotlin-js-store/   # Kotlin/JS 编译缓存
-
-
-.cxx/
-.externalNativeBuild/
-
-
-proguard/
-
-
-
-*.iml
-.idea/
-local.properties
-.claude/
-.aiexclude
-
-
-*.jks
+# Sensitive configuration and keys
 *.keystore
+*.jks
+*.key
+local.properties
+secret.properties
+private.properties
+gradle.properties
+signing.properties
+keystore.properties
+env.local
 google-services.json
 
+# AI and local agent configuration
+.claude/
+.claude-skills/
+.claude-code/
+.cc-switch/
+.cc-switch.json
+claude-*.log
+claude.log
+*.session
+*.chat
+*.prompt
+.aiexclude
 
-freeline.py
-freeline/
-freeline_project_description.json
-
-
-fastlane/report.xml
-fastlane/Preview.html
-fastlane/screenshots
-fastlane/test_output
-fastlane/readme.md
-
-
-lint/intermediates/
-lint/generated/
-lint/outputs/
-lint/tmp/
-
-
-capacitor-cordova-android-plugins
-app/src/main/assets/public
-app/src/main/assets/capacitor.config.json
-app/src/main/assets/capacitor.plugins.json
-app/src/main/res/xml/config.xml
-
-
-
+# Logs, reports, and test outputs
 *.log
 *.hprof
 captures/
 .navigation/
 output-metadata.json
 vcs.xml
+reports/
+jacoco/
+dependency-check-report.html
+owasp-suppression.xml
+lint-results*.html
+lint-results*.xml
+detekt-report/
+lint/intermediates/
+lint/generated/
+lint/outputs/
+lint/tmp/
 
+# Freeline (fast incremental build tool)
+freeline.py
+freeline/
+freeline_project_description.json
 
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+fastlane/readme.md
 
+# Capacitor
+capacitor-cordova-android-plugins
+app/src/main/assets/public
+app/src/main/assets/capacitor.config.json
+app/src/main/assets/capacitor.plugins.json
+app/src/main/res/xml/config.xml
+
+# iOS specific (for cross-platform projects)
 **/iosApp/Pods/
 **/iosApp/*.xcworkspace
 **/iosApp/*.xcodeproj/project.xcworkspace/
