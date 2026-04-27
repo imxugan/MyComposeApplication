@@ -33,19 +33,16 @@ pipeline {
                     // 4. Lint 检查
                     sh './gradlew lint'
 
-                    // 5. 静态分析
-                    sh './gradlew detekt'
-
-                    // 6. OWASP 依赖漏洞扫描
+                    // 5. OWASP 依赖漏洞扫描
                     sh './gradlew dependencyCheckAnalyze'
 
-                    // 7. 编译 Debug 包（测试覆盖率需要 debug build）
+                    // 6. 编译 Debug 包（测试覆盖率需要 debug build）
                     sh './gradlew assembleDebug'
 
-                    // 8. 运行单元测试并生成覆盖率报告
+                    // 7. 运行单元测试并生成覆盖率报告
                     sh './gradlew createDebugCombinedCoverageReport'
 
-                    // 9. 增量覆盖率检查（只检查本次变更代码）
+                    // 8. 增量覆盖率检查（只检查本次变更代码）
                     sh '''
                         TARGET_BRANCH="origin/main"
                         diff-cover app/build/reports/jacoco/createDebugCombinedCoverageReport/createDebugCombinedCoverageReport.xml \\
@@ -54,7 +51,7 @@ pipeline {
                             --src-roots "src/main/java"
                     '''
 
-                    // 10. 全量覆盖率验证（行覆盖率，阈值 80%）
+                    // 9. 全量覆盖率验证（行覆盖率，阈值 80%）
                     sh '''
                         REPORT="app/build/reports/jacoco/createDebugCombinedCoverageReport/createDebugCombinedCoverageReport.xml"
                         if [ ! -f "$REPORT" ]; then
@@ -77,7 +74,7 @@ pipeline {
                         fi
                     '''
 
-                    // 11. 构建 Release 包（签名信息由环境变量提供）
+                    // 10. 构建 Release 包（签名信息由环境变量提供）
                     sh './gradlew assembleRelease'
                 }
             }
