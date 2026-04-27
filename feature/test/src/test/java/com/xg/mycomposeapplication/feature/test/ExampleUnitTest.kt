@@ -14,5 +14,7 @@ class ExampleUnitTest {
     assertEquals(4, 2 + 2)
   }
 
-  val test_jekins_spoltess = "aaaaaaaaa"
+//  val test_jekins_spoltess = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+
+  val testJenkinsSpotless = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 }
