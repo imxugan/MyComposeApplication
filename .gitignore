@@ -53,6 +53,7 @@ proguard/
 .idea/
 local.properties
 .claude/
+.aiexclude
 
 
 *.jks
