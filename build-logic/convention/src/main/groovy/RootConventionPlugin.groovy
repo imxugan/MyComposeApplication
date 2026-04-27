@@ -14,8 +14,7 @@ class RootConventionPlugin implements Plugin<Project> {
 
       sub.pluginManager.apply("com.xg.spotless.convention")
 
-      // 如果你要 jacoco，也可以加
-      // sub.pluginManager.apply("com.xg.mycomposeapplication.jacoco.convention")
+      sub.pluginManager.apply("com.xg.mycomposeapplication.jacoco.convention")
 
       sub.pluginManager.apply("com.xg.mycomposeapplication.owasp.convention")
     }
