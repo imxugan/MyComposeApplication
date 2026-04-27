@@ -2,6 +2,8 @@ pipeline {
     agent any   // Jenkins 宿主机已配好 Android SDK
 
     environment {
+        ANDROID_HOME = '/opt/android-sdk'
+        PATH = "${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/cmdline-tools/latest/bin:${env.PATH}"
         GRADLE_OPTS = '-Xmx4g -Dfile.encoding=UTF-8'
         CI = 'true'
     }
