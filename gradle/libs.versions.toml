@@ -14,6 +14,8 @@ spotless = "6.25.0"
 appcompat = "1.7.1"
 material = "1.10.0"
 
+# OWASP 依赖漏洞检查插件版本
+owasp-dependency-check = "8.4.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -44,6 +46,11 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 spotless-gradlePlugin = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version.ref = "spotless" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+
+
+# OWASP Dependency Check 插件（Gradle 插件包本体）
+# 仅用于旧版构建脚本的 classpath 引入
+owasp-dependencycheck-gradlePlugin = { module = "org.owasp:dependency-check-gradle", version.ref = "owasp-dependency-check" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
