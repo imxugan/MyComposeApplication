@@ -62,7 +62,7 @@ pipeline {
                         ls -R app/build/reports/jacoco/ 2>/dev/null || echo "reports/jacoco 目录不存在"
                         echo ""
                         echo "6. 打印关键日志 (过滤 jacoco 相关信息)"
-                        grep -iE "jacoco|classfiles|sourcedir|report|\.exec|\.class|skipping|up-to-date" /tmp/jacoco-report-info.log | head -50
+                        grep -iE "jacoco|classfiles|sourcedir|report|[.]exec|[.]class|skipping|up-to-date" /tmp/jacoco-report-info.log | head -50
                         echo "==================== 诊断结束 ===================="
                     '''
 
