@@ -1,0 +1,15 @@
+name: Trigger Jenkins Build on Push
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  trigger:
+    runs-on: self-hosted
+    steps:
+      - name: Trigger Jenkins Pipeline Job
+        run: |
+          curl -X POST "http://localhost:8080/job/MyComposeApplication-Pipeline/build" \
+               --user "${{ secrets.JENKINS_USER }}:${{ secrets.JENKINS_TOKEN }}"
