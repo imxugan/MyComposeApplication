@@ -70,23 +70,20 @@ class JacocoConventionPlugin implements Plugin<Project> {
             '**/*Companion*', '**/*Module.*', '**/*Dagger*'
           ]
 
+          // 无条件注册 classDirectories（即使目录当前还不存在）
           def classesDir = project.layout.buildDirectory
             .dir("tmp/kotlin-classes/${variant.name}")
             .get().asFile
-          if (classesDir.exists()) {
-            task.classDirectories.from = project.files(
-              project.fileTree(dir: classesDir, excludes: exclusions)
-            )
-          }
+          task.classDirectories.from = project.files(
+            project.fileTree(dir: classesDir, excludes: exclusions)
+          )
 
-          // ===== 唯一改动：修正执行数据文件路径 =====
-          // AGP 8.x 默认将单元测试的 .exec 生成到 outputs/unit_test_code_coverage 目录
+          // 执行数据文件路径（AGP 8.x 默认输出目录）
           def execFile = project.layout.buildDirectory
             .file("outputs/unit_test_code_coverage/${variant.name}UnitTest/${testTaskName}.exec")
             .get().asFile
-          if (execFile.exists()) {
-            task.executionData.from = project.files(execFile)
-          }
+          // 无条件注册 executionData（.exec 文件由 dependsOn 任务在执行阶段生成）
+          task.executionData.from = project.files(execFile)
         }
       }
     }
