@@ -40,7 +40,7 @@ pipeline {
                     sh './gradlew assembleDebug'
 
                     // 7. 运行单元测试并生成覆盖率报告
-                    sh './gradlew createDebugCombinedCoverageReport'
+                    sh './gradlew :app:createDebugCombinedCoverageReport'
 
                     // 8. 增量覆盖率检查（只检查本次变更代码）
                     sh '''
