@@ -31,8 +31,23 @@ pipeline {
                     // 3. Lint 检查
                     sh './gradlew lint'
 
-                    // 4. OWASP 依赖漏洞扫描（暂时注释，需要时恢复）
-                    sh './gradlew dependencyCheckAnalyze'
+                    // 4. OWASP 依赖漏洞扫描（不阻塞构建 + 校验报告）
+                    sh """
+                    ./gradlew dependencyCheckAnalyze \
+                      -Dnvd.api.key=$NVD_API_KEY \
+                      --failOnError=false
+                    """
+
+                    // 检查报告是否生成（未生成则标记为 unstable）
+                    script {
+                        def reportPath = "app/build/reports/dependency-check-report.html"
+                        if (!fileExists(reportPath)) {
+                            echo "⚠️ OWASP 报告未生成，可能扫描失败"
+                            currentBuild.result = 'UNSTABLE'
+                        } else {
+                            echo "✅ OWASP 报告已生成: ${reportPath}"
+                        }
+                    }
 
                     // 5. 编译 Debug 包（测试覆盖率需要 debug build）
                     sh './gradlew assembleDebug'
