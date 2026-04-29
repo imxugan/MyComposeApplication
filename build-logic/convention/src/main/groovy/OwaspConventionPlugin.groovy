@@ -37,21 +37,61 @@ class OwaspConventionPlugin implements Plugin<Project> {
         suppressionFiles = [suppressionFile.path]
       }
 
-
-      // ✅ 12.x 正确写法：直接赋值属性，不再嵌套闭包
       analyzers {
-        // 关闭 .NET assembly 分析器（Java 项目无需启用，提升扫描速度）
+
+        // 关闭 .NET Assembly 分析器
+        // 👉 作用：
+        //    - 扫描 .dll / .exe 等 .NET 依赖
+        // 👉 为什么关闭：
+        //    - Android / Java 项目不会用到 .NET
+        // 👉 收益：
+        //    - 减少无意义扫描，略微提升构建速度
         assemblyEnabled = false
-        // 彻底禁用 RetireJS，避免因网络无法连接 raw.githubusercontent.com 而失败
-        retirejsEnabled = false
-        // 禁用 OSS Index 以避免认证要求
+
+
+        // 关闭 OSS Index（Sonatype 提供的漏洞数据源）
+        // 👉 作用：
+        //    - 通过 Sonatype OSS Index API 查询依赖漏洞
+        // 👉 为什么关闭：
+        //    - 需要网络访问，CI 环境可能不稳定
+        //    - 有请求频率限制，可能导致构建失败
+        // 👉 收益：
+        //    - 避免外部 API 不稳定带来的失败
+        // 👉 影响：
+        //    - 仍然会使用 NVD（主要漏洞来源），影响较小
         ossindexEnabled = false
+
+
+        // 关闭 Node.js 依赖分析
+        // 👉 作用：
+        //    - 扫描 package.json / node_modules
+        // 👉 为什么关闭：
+        //    - 当前是 Android 项目，没有 Node 依赖
+        // 👉 收益：
+        //    - 明显减少扫描时间（中等优化）
+        nodeEnabled = false
+
+
+        // 关闭 npm audit 分析（Node 漏洞审计）
+        // 👉 作用：
+        //    - 调用 npm audit 检查 JS 依赖漏洞
+        // 👉 为什么关闭：
+        //    - 同样依赖 Node 环境 + 网络
+        //    - CI 环境可能没有 npm
+        // 👉 收益：
+        //    - 避免环境依赖问题 + 提升稳定性
+        nodeAuditEnabled = false
       }
 
       // 配置 NVD API Key
       // 参考: https://jeremylong.github.io/DependencyCheck/dependency-check-gradle/configuration.html
       nvd {
         apiKey = nvdApiKey // 设置从环境变量或 gradle.properties 获取的 Key
+      }
+
+      data {
+        // 🚀 CI 缓存核心
+        directory = "/var/lib/jenkins/owasp-cache"
       }
     }
   }
