@@ -30,16 +30,9 @@ pipeline {
                     // 3. Lint 检查（失败直接中断）
                     sh './gradlew lint'
 
-                    sh 'echo "Debug: Checking if NVD_API_KEY is set: ${NVD_API_KEY:0:10}..."'
-                    // 4. OWASP 依赖漏洞扫描（失败标记 UNSTABLE，继续后续步骤，并发送邮件）
-                    script {
-                        try {
-                            sh './gradlew dependencyCheckAnalyze'
-                        } catch (err) {
-                            echo "⚠️ OWASP 扫描失败，构建标记为 UNSTABLE"
-                            currentBuild.result = 'UNSTABLE'
-                            // 如果需要立即发邮件，可在此处加 emailext，否则依赖 post -> unstable 统一发送
-                        }
+                    // 4. OWASP 依赖漏洞扫描（捕获错误，标记为 UNSTABLE，继续执行）
+                    catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+                        sh './gradlew dependencyCheckAnalyze'
                     }
 
                     // 5. 编译 Debug 包
