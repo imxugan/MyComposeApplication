@@ -49,19 +49,6 @@ class OwaspConventionPlugin implements Plugin<Project> {
         assemblyEnabled = false
 
 
-        // 关闭 OSS Index（Sonatype 提供的漏洞数据源）
-        // 👉 作用：
-        //    - 通过 Sonatype OSS Index API 查询依赖漏洞
-        // 👉 为什么关闭：
-        //    - 需要网络访问，CI 环境可能不稳定
-        //    - 有请求频率限制，可能导致构建失败
-        // 👉 收益：
-        //    - 避免外部 API 不稳定带来的失败
-        // 👉 影响：
-        //    - 仍然会使用 NVD（主要漏洞来源），影响较小
-        ossindexEnabled = false
-
-
         // 关闭 Node.js 依赖分析
         // 👉 作用：
         //    - 扫描 package.json / node_modules
