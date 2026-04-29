@@ -99,39 +99,49 @@ pipeline {
     }
 
     post {
+        failure {
+            emailext(
+                subject: "❌ CI 失败: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """
+                    <h3>🚨 构建失败</h3>
+                    <p><b>项目:</b> ${env.JOB_NAME}</p>
+                    <p><b>构建号:</b> ${env.BUILD_NUMBER}</p>
+                    <p><b>分支:</b> ${env.GIT_BRANCH}</p>
+                    <p><b>详情:</b> <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                """,
+                mimeType: 'text/html',
+
+                // ✅ 固定人员
+                to: 'imxugan@163.com',
+
+                // ✅ 动态人员（关键）
+                recipientProviders: [
+                    [$class: 'DevelopersRecipientProvider'],  // 提交人
+                    [$class: 'CulpritsRecipientProvider']     // 最近导致失败的人
+                ]
+            )
+        }
+
+        unstable {
+            emailext(
+                subject: "⚠️ CI 警告: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """
+                    <h3>⚠️ 构建不稳定</h3>
+                    <p>可能原因：覆盖率不足 / diff 未达标</p>
+                    <p><a href="${env.BUILD_URL}">查看详情</a></p>
+                """,
+                mimeType: 'text/html',
+
+                to: 'imxugan@163.com',
+
+                recipientProviders: [
+                    [$class: 'DevelopersRecipientProvider']
+                ]
+            )
+        }
+
         always {
             cleanWs()
         }
-
-        failure {
-                emailext(
-                    subject: "❌ CI 失败: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
-                    body: """
-                        <h3>构建失败</h3>
-                        <p><b>项目:</b> ${env.JOB_NAME}</p>
-                        <p><b>构建编号:</b> ${env.BUILD_NUMBER}</p>
-                        <p><b>分支:</b> ${env.GIT_BRANCH}</p>
-                        <p><b>耗时:</b> ${currentBuild.durationString}</p>
-                        <p><b>详情:</b> <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
-                        <p>请尽快修复。</p>
-                    """,
-                    to: 'imxugan@163.com'  // ← 替换为真实收件人
-                )
-            }
-            unstable {
-                emailext(
-                    subject: "⚠️ CI 不稳定: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
-                    body: """
-                        <h3>构建不稳定（测试失败或覆盖率不足）</h3>
-                        <p><b>项目:</b> ${env.JOB_NAME}</p>
-                        <p><b>构建编号:</b> ${env.BUILD_NUMBER}</p>
-                        <p><b>分支:</b> ${env.GIT_BRANCH}</p>
-                        <p><b>耗时:</b> ${currentBuild.durationString}</p>
-                        <p><b>详情:</b> <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
-                        <p>请检查测试或覆盖率报告。</p>
-                    """,
-                    to: 'imxugan@163.com'
-                )
-            }
     }
 }
