@@ -83,7 +83,7 @@ pipeline {
     post {
         // 构建失败（任何致命错误）发送邮件
         failure {
-            emailext(
+            mail(
                 subject: "❌ CI 失败: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                 body: """
                     <h3>🚨 构建失败</h3>
@@ -92,21 +92,19 @@ pipeline {
                     <p><b>分支:</b> ${env.GIT_BRANCH}</p>
                     <p><b>详情:</b> <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
                 """,
-                mimeType: 'text/html',
                 to: 'imxugan@163.com'
             )
         }
 
         // 构建不稳定（如 OWASP 失败）发送邮件
         unstable {
-            emailext(
+            mail(
                 subject: "⚠️ CI 警告: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                 body: """
                     <h3>⚠️ 构建不稳定</h3>
                     <p>可能原因：OWASP 扫描未通过（网络问题或发现漏洞）、覆盖率不足等。</p>
                     <p><a href="${env.BUILD_URL}">查看详情</a></p>
                 """,
-                mimeType: 'text/html',
                 to: 'imxugan@163.com'
             )
         }
