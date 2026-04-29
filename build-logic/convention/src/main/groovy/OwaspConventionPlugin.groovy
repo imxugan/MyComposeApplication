@@ -48,26 +48,9 @@ class OwaspConventionPlugin implements Plugin<Project> {
         //    - 减少无意义扫描，略微提升构建速度
         assemblyEnabled = false
 
-
-        // 关闭 Node.js 依赖分析
-        // 👉 作用：
-        //    - 扫描 package.json / node_modules
-        // 👉 为什么关闭：
-        //    - 当前是 Android 项目，没有 Node 依赖
-        // 👉 收益：
-        //    - 明显减少扫描时间（中等优化）
-        nodeEnabled = false
-
-
-        // 关闭 npm audit 分析（Node 漏洞审计）
-        // 👉 作用：
-        //    - 调用 npm audit 检查 JS 依赖漏洞
-        // 👉 为什么关闭：
-        //    - 同样依赖 Node 环境 + 网络
-        //    - CI 环境可能没有 npm
-        // 👉 收益：
-        //    - 避免环境依赖问题 + 提升稳定性
-        nodeAuditEnabled = false
+        retirejs {
+          enabled = false        // ← 仅禁用 RetireJS，12.1.9 确认有效
+        }
       }
 
       // 配置 NVD API Key
