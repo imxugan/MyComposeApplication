@@ -17,6 +17,12 @@ class OwaspConventionPlugin implements Plugin<Project> {
     // 1. 自动应用 OWASP 依赖检查核心插件
     project.pluginManager.apply('org.owasp.dependencycheck')
 
+    // 获取 NVD API Key
+    // 1. 尝试从系统环境变量中获取
+    // 2. 若不存在，则从 gradle.properties 中读取
+    // 3. 若都不存在，则设为 null (此时插件会使用无key模式，速度极慢)
+    def nvdApiKey = System.getenv("NVD_API_KEY") ?: project.findProperty("owasp.nvdApiKey")
+
     // 2. 统一配置 OWASP 检查规则（所有模块共用一套安全标准）
     project.dependencyCheck {
       // CVSS 漏洞评分 ≥ 7.0 时，直接构建失败（阻断高危漏洞上线）
@@ -25,13 +31,16 @@ class OwaspConventionPlugin implements Plugin<Project> {
 
       // 指定漏洞白名单/忽略规则文件（根目录下的 owasp-suppression.xml）
       // 用于忽略确认无害/已修复/误报的漏洞
-      suppressionFiles = project.rootProject.file('owasp-suppression.xml').path
+      suppressionFiles = [project.rootProject.file('owasp-suppression.xml').path]
 
       // 关闭 .NET assembly 分析器（Java 项目无需启用，提升扫描速度）
       analyzers.assemblyEnabled = false
 
-      //跳过无法连接的RetireJS
-      analyzers.retirejs.enabled = false
+      // 配置 NVD API Key
+      // 参考: https://jeremylong.github.io/DependencyCheck/dependency-check-gradle/configuration.html
+      nvd {
+        apiKey = nvdApiKey // 设置从环境变量或 gradle.properties 获取的 Key
+      }
     }
   }
 }

@@ -26,6 +26,7 @@ dependencyResolutionManagement {
             }
         }
         mavenCentral()  // 通用开源库中央仓库
+        gradlePluginPortal()
     }
 
     // 3. 版本目录配置：让 build-logic 模块能使用根项目的 libs.versions.toml

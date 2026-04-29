@@ -15,7 +15,7 @@ appcompat = "1.7.1"
 material = "1.10.0"
 
 # OWASP 依赖漏洞检查插件版本
-owasp-dependency-check = "8.4.0"
+owasp-dependency-check = "12.1.9"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -50,7 +50,7 @@ material = { group = "com.google.android.material", name = "material", version.r
 
 # OWASP Dependency Check 插件（Gradle 插件包本体）
 # 仅用于旧版构建脚本的 classpath 引入
-owasp-dependencycheck-gradlePlugin = { module = "org.owasp:dependency-check-gradle", version.ref = "owasp-dependency-check" }
+owasp-dependencycheck-gradlePlugin = { module = "org.owasp.dependencycheck:org.owasp.dependencycheck.gradle.plugin", version.ref = "owasp-dependency-check" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
