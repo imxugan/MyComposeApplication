@@ -31,7 +31,7 @@ pipeline {
                     sh './gradlew lint'
 
                     // 4. OWASP 依赖漏洞扫描（暂时注释，需要时恢复）
-                    // sh './gradlew dependencyCheckAnalyze'
+                    sh './gradlew dependencyCheckAnalyze'
 
                     // 5. 编译 Debug 包（测试覆盖率需要 debug build）
                     sh './gradlew assembleDebug'
