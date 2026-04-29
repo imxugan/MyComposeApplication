@@ -33,8 +33,14 @@ class OwaspConventionPlugin implements Plugin<Project> {
       // 用于忽略确认无害/已修复/误报的漏洞
       suppressionFiles = [project.rootProject.file('owasp-suppression.xml').path]
 
-      // 关闭 .NET assembly 分析器（Java 项目无需启用，提升扫描速度）
-      analyzers.assemblyEnabled = false
+      analyzers {
+        // 关闭 .NET assembly 分析器（Java 项目无需启用，提升扫描速度）
+        assemblyEnabled = false
+        // 彻底禁用 RetireJS，避免因网络无法连接 raw.githubusercontent.com 而失败
+        retirejs {
+          enabled = false
+        }
+      }
 
       // 配置 NVD API Key
       // 参考: https://jeremylong.github.io/DependencyCheck/dependency-check-gradle/configuration.html
