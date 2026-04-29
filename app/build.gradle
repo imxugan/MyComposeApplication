@@ -1,8 +1,6 @@
 plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.jetbrains.kotlin.android)
-
-  id 'com.xg.mycomposeapplication.jacoco.convention'  // 自定义 JaCoCo 插件
 }
 
 // 读取 local.properties 文件（用于本地开发签名）
@@ -46,7 +44,7 @@ android {
         // 本地构建：从 local.properties 读取
         storeFile file(localProperties.getProperty("KEYSTORE_FILE"))
         storePassword localProperties.getProperty("KEYSTORE_PWD")
-        keyAlias localProperties.getProperty("KEY_ALIAS", "keyo")
+        keyAlias localProperties.getProperty("KEY_ALIAS")
         keyPassword localProperties.getProperty("KEY_PWD")
       }
     }
