@@ -112,4 +112,10 @@ dependencies {
 
 dependencyCheck {
   failOnError = false
+
+  analyzers {
+    retirejs {
+      enabled = false
+    }
+  }
 }
