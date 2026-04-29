@@ -31,13 +31,21 @@ class OwaspConventionPlugin implements Plugin<Project> {
 
       // 指定漏洞白名单/忽略规则文件（根目录下的 owasp-suppression.xml）
       // 用于忽略确认无害/已修复/误报的漏洞
-      suppressionFiles = [project.rootProject.file('owasp-suppression.xml').path]
+      // 仅当 suppression 文件存在时才配置，避免因文件缺失导致失败
+      def suppressionFile = project.rootProject.file('owasp-suppression.xml')
+      if (suppressionFile.exists()) {
+        suppressionFiles = [suppressionFile.path]
+      }
 
       analyzers {
         // 关闭 .NET assembly 分析器（Java 项目无需启用，提升扫描速度）
         assemblyEnabled = false
         // 彻底禁用 RetireJS，避免因网络无法连接 raw.githubusercontent.com 而失败
         retirejs {
+          enabled = false
+        }
+        // 禁用 OSS Index 以避免认证要求
+        ossindex {
           enabled = false
         }
       }
