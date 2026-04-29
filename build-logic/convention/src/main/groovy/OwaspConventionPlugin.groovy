@@ -29,6 +29,9 @@ class OwaspConventionPlugin implements Plugin<Project> {
 
       // 关闭 .NET assembly 分析器（Java 项目无需启用，提升扫描速度）
       analyzers.assemblyEnabled = false
+
+      //跳过无法连接的RetireJS
+      analyzers.retirejs.enabled = false
     }
   }
 }

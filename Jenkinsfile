@@ -2,6 +2,7 @@ pipeline {
     agent any
 
     environment {
+        NVD_API_KEY = credentials('NVD_API_KEY')
         ANDROID_HOME = '/opt/android-sdk'
         // 完全重写 PATH，确保 Android SDK 工具和系统命令可用
         PATH = "${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/cmdline-tools/latest/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
