@@ -31,14 +31,13 @@ pipeline {
                     // 3. Lint 检查
                     sh './gradlew lint'
 
-                    // 4. OWASP 依赖漏洞扫描（不阻塞构建 + 校验报告）
-                    sh """
+                    // 4. OWASP 依赖漏洞扫描
+                    sh '''
                     ./gradlew dependencyCheckAnalyze \
-                      -Dnvd.api.key=$NVD_API_KEY \
-                      --failOnError=false
-                    """
+                      -Dnvd.api.key=$NVD_API_KEY
+                    '''
 
-                    // 检查报告是否生成（未生成则标记为 unstable）
+                    // 检查报告
                     script {
                         def reportPath = "app/build/reports/dependency-check-report.html"
                         if (!fileExists(reportPath)) {
