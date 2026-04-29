@@ -37,17 +37,15 @@ class OwaspConventionPlugin implements Plugin<Project> {
         suppressionFiles = [suppressionFile.path]
       }
 
+
+      // ✅ 12.x 正确写法：直接赋值属性，不再嵌套闭包
       analyzers {
         // 关闭 .NET assembly 分析器（Java 项目无需启用，提升扫描速度）
         assemblyEnabled = false
         // 彻底禁用 RetireJS，避免因网络无法连接 raw.githubusercontent.com 而失败
-        retirejs {
-          enabled = false
-        }
+        retirejsEnabled = false
         // 禁用 OSS Index 以避免认证要求
-        ossindex {
-          enabled = false
-        }
+        ossindexEnabled = false
       }
 
       // 配置 NVD API Key
