@@ -52,7 +52,9 @@ pipeline {
                     sh '''
                         REPORT="app/build/reports/jacoco/createDebugCombinedCoverageReport/createDebugCombinedCoverageReport.xml"
                         if [ ! -f "$REPORT" ]; then
-                            echo "Coverage report not found: $REPORT"
+                            echo "============================================"
+                            echo "  ❌ 构建失败：未找到覆盖率报告 ($REPORT)"
+                            echo "============================================"
                             exit 1
                         fi
                         # 提取所有 LINE 级别的 covered 和 missed 数值，用 awk 求和
@@ -60,15 +62,31 @@ pipeline {
                         MISSED=$(grep -o '<counter type="LINE"[^>]*missed="[0-9]*"' "$REPORT" | grep -o 'missed="[0-9]*"' | grep -o '[0-9]*' | awk '{s+=$1} END{print s}')
                         TOTAL=$((COVERED + MISSED))
                         if [ $TOTAL -eq 0 ]; then
-                            echo "No lines to check."
+                            echo ""
+                            echo "============================================"
+                            echo "  ⚠️  没有任何代码可统计，跳过覆盖率验证"
+                            echo "============================================"
+                            echo ""
                             exit 0
                         fi
                         RATIO=$(echo "scale=4; $COVERED / $TOTAL" | bc)
                         PERCENT=$(echo "scale=1; $RATIO * 100" | bc)
-                        echo "Line coverage: ${PERCENT}%"
+                        echo ""
+                        echo "============================================"
+                        echo "  当前行覆盖率: ${PERCENT}% (已覆盖: ${COVERED} 行, 未覆盖: ${MISSED} 行)"
+                        echo "============================================"
+                        echo ""
                         if (( $(echo "$PERCENT < 80.0" | bc -l) )); then
-                            echo "Coverage ${PERCENT}% is below 80%"
+                            echo "============================================"
+                            echo "  ❌ 构建失败：覆盖率 ${PERCENT}% 不满足最低阈值 80%"
+                            echo "  原因：项目缺少单元测试或测试未覆盖业务代码"
+                            echo "  解决：为业务类补充JUnit测试用例"
+                            echo "============================================"
                             exit 1
+                        else
+                            echo "============================================"
+                            echo "  ✅ 覆盖率验证通过 (${PERCENT}% ≥ 80%)"
+                            echo "============================================"
                         fi
                     '''
 
