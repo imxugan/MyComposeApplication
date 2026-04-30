@@ -19,6 +19,9 @@ owasp-dependency-check = "12.1.9"
 
 jacoco = "0.8.11"
 
+kotlinx-coroutines-test = "1.7.3"
+mockk = "1.13.8"
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -53,6 +56,9 @@ material = { group = "com.google.android.material", name = "material", version.r
 # OWASP Dependency Check 插件（Gradle 插件包本体）
 # 仅用于旧版构建脚本的 classpath 引入
 owasp-dependencycheck-gradlePlugin = { module = "org.owasp.dependencycheck:org.owasp.dependencycheck.gradle.plugin", version.ref = "owasp-dependency-check" }
+
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinx-coroutines-test" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

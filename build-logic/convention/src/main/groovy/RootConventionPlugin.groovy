@@ -17,6 +17,8 @@ class RootConventionPlugin implements Plugin<Project> {
       sub.pluginManager.apply("com.xg.mycomposeapplication.jacoco.convention")
 
       sub.pluginManager.apply("com.xg.mycomposeapplication.owasp.convention")
+
+      sub.pluginManager.apply("com.xg.mycomposeapplication.unit.test.convention")
     }
   }
 }

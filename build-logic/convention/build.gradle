@@ -32,5 +32,10 @@ gradlePlugin {
       id = 'com.xg.mycomposeapplication.owasp.convention'
       implementationClass = 'OwaspConventionPlugin'
     }
+
+    unitTest {
+      id = "com.xg.mycomposeapplication.unit.test.convention"
+      implementationClass = "UnitTestConventionPlugin"
+    }
   }
 }
