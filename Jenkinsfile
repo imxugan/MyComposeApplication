@@ -50,14 +50,6 @@ pipeline {
                             --src-roots "src/main/java"
                     '''
 
-                    // 8. 发布覆盖率报告到 Jenkins JaCoCo 插件（自动生成项目页面入口和趋势图）
-                    //    同时包含 Kotlin 和 Java 编译目录，解决 Kotlin 类覆盖率为 0 的问题
-                    jacoco(
-                        execPattern: 'app/build/outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec',
-                        classPattern: 'app/build/tmp/kotlin-classes/debug/**, app/build/intermediates/javac/debug/classes/**',
-                        sourcePattern: 'app/src/main/java/**'
-                    )
-
                     // 9. 构建 Release 包
                     sh './gradlew assembleRelease'
                 }
@@ -97,6 +89,19 @@ pipeline {
                     reportName: 'OWASP Dependency-Check Report'
                 ]
             )
+
+            // ★ 发布 JaCoCo 覆盖率 HTML 报告（不使用 jacoco 插件，直接用 HTML Publisher）
+            publishHTML(
+                target: [
+                    allowMissing: true,
+                    alwaysLinkToLastBuild: false,
+                    keepAll: true,
+                    reportDir: 'app/build/reports/jacoco/createDebugCombinedCoverageReport/html',
+                    reportFiles: 'index.html',
+                    reportName: 'JaCoCo Coverage Report'
+                ]
+            )
+
             // 无论成功失败都清理工作区
             cleanWs()
         }
