@@ -99,8 +99,20 @@ pipeline {
             )
         }
 
-        // 无论成功失败都清理工作区
+        // 总是执行报告归档，无论构建成功还是失败
         always {
+            // 发布 OWASP HTML 报告
+            publishHTML(
+                target: [
+                    allowMissing: true,  // 报告缺失时不中断构建
+                    alwaysLinkToLastBuild: false,
+                    keepAll: true,
+                    reportDir: 'app/build/reports',  // OWASP 报告的父目录
+                    reportFiles: 'dependency-check-report.html',  // 报告文件名
+                    reportName: 'OWASP Dependency-Check Report'
+                ]
+            )
+            无论成功失败都清理工作区
             cleanWs()
         }
     }
