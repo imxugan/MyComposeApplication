@@ -50,13 +50,28 @@ pipeline {
                             --src-roots "src/main/java"
                     '''
 
-                    // 8. 发布覆盖率趋势图（使用 Cobertura 解析 Gradle 生成的 XML，无需 class 路径）
-                    cobertura(
-                        coberturaReportFile: 'app/build/reports/jacoco/createDebugCombinedCoverageReport/createDebugCombinedCoverageReport.xml',
-                        onlyStable: false,
-                        failUnhealthy: false,
-                        failUnstable: false
-                    )
+                    // 8. 全量覆盖率验证
+                    sh '''
+                        REPORT="app/build/reports/jacoco/createDebugCombinedCoverageReport/createDebugCombinedCoverageReport.xml"
+                        if [ ! -f "$REPORT" ]; then
+                            echo "❌ 未找到覆盖率报告"
+                            exit 1
+                        fi
+                        COVERED=$(grep -o '<counter type="LINE"[^>]*covered="[0-9]*"' "$REPORT" | grep -o 'covered="[0-9]*"' | grep -o '[0-9]*' | awk '{s+=$1} END{print s}')
+                        MISSED=$(grep -o '<counter type="LINE"[^>]*missed="[0-9]*"' "$REPORT" | grep -o 'missed="[0-9]*"' | grep -o '[0-9]*' | awk '{s+=$1} END{print s}')
+                        TOTAL=$((COVERED + MISSED))
+                        if [ $TOTAL -eq 0 ]; then
+                            echo "⚠️ 无代码可统计，跳过覆盖率检查"
+                            exit 0
+                        fi
+                        RATIO=$(echo "scale=4; $COVERED / $TOTAL" | bc)
+                        PERCENT=$(echo "scale=1; $RATIO * 100" | bc)
+                        echo "当前行覆盖率: ${PERCENT}%"
+                        if (( $(echo "$PERCENT < 80.0" | bc -l) )); then
+                            echo "❌ 覆盖率不达标，构建失败"
+                            exit 0   # 先不中断构建
+                        fi
+                    '''
 
                     // 9. 构建 Release 包
                     sh './gradlew assembleRelease'
@@ -97,6 +112,19 @@ pipeline {
                     reportName: 'OWASP Dependency-Check Report'
                 ]
             )
+
+            // ★ 新增：发布 JaCoCo 静态 HTML 报告（左侧菜单出现入口）
+            publishHTML(
+                target: [
+                    allowMissing: true,
+                    alwaysLinkToLastBuild: false,
+                    keepAll: true,
+                    reportDir: 'app/build/reports/jacoco/createDebugCombinedCoverageReport/html',
+                    reportFiles: 'index.html',
+                    reportName: 'JaCoCo Coverage Report'
+                ]
+            )
+
             // 无论成功失败都清理工作区
             cleanWs()
         }

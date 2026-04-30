@@ -72,22 +72,16 @@ class JacocoConventionPlugin implements Plugin<Project> {
             '**/*Module.*', '**/*Dagger*'
           ]
 
-          // ---------- 修改点：精确指定两类字节码目录 ----------
-          // 原因：AGP 8.x 将 Kotlin 和 Java 的字节码分别输出到以下两个目录
-          // - tmp/kotlin-classes/ : 存放 Kotlin 代码编译后的 .class 文件
-          // - intermediates/javac/ : 存放 Java 代码编译后的 .class 文件
-          // JaCoCo 必须同时包含这两个路径，才能统计所有代码的覆盖率
-
-          def kotlinClassesDir = project.layout.buildDirectory
-            .dir("tmp/kotlin-classes/${variant.name}")
-            .get().asFile
-          def javaClassesDir = project.layout.buildDirectory
-            .dir("intermediates/javac/${variant.name}/classes")
+          // ---------- ★ 唯一修改点：使用 AGP 离线插桩后的类目录 ----------
+          // 原因：启用 testCoverageEnabled 后，单元测试实际执行的是插桩类
+          // 该类位于 intermediates/classes/<variant>/jacocoDebug，必须使用此目录
+          // 才能与 executionData 正确匹配
+          def jacocoClassesDir = project.layout.buildDirectory
+            .dir("intermediates/classes/${variant.name}/jacocoDebug")
             .get().asFile
 
           task.classDirectories.from = project.files(
-            project.fileTree(dir: kotlinClassesDir, excludes: exclusions),
-            project.fileTree(dir: javaClassesDir, excludes: exclusions)
+            project.fileTree(dir: jacocoClassesDir, excludes: exclusions)
           )
 
           // executionData 路径不变
