@@ -51,10 +51,10 @@ pipeline {
                     '''
 
                     // 8. 发布覆盖率报告到 Jenkins JaCoCo 插件（自动生成项目页面入口和趋势图）
-                    //    classPattern 包含 Kotlin 编译目录与 AGP Jacoco 插桩目录
+                    //    classPattern 仅使用原始 Kotlin 编译目录，避免插桩类导致插件崩溃
                     jacoco(
                         execPattern: 'app/build/outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec',
-                        classPattern: 'app/build/tmp/kotlin-classes/debug/**, app/build/intermediates/classes/debug/jacocoDebug/**',
+                        classPattern: 'app/build/tmp/kotlin-classes/debug/**',  // ★ 移除插桩目录
                         sourcePattern: 'app/src/main/java/**'
                     )
 
