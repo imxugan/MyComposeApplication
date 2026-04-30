@@ -7,14 +7,14 @@ class JacocoConventionPlugin implements Plugin<Project> {
   void apply(Project project) {
     project.pluginManager.apply('jacoco')
 
-    // 非 Android 模块的后备配置
+    // ✅ 从 libs.versions.toml 读取版本（官方规范）
+    project.jacoco {
+      toolVersion = project.libs.versions.jacoco.get()
+    }
+
     project.tasks.withType(Test).configureEach { Test test ->
       test.jacoco {
         enabled = true
-        includes = ['**/*.class']
-        excludes = ['**/R.class', '**/BuildConfig.*']
-        destinationFile = project.layout.buildDirectory
-          .file("jacoco/${test.name}.exec").get().asFile
       }
     }
 
@@ -44,7 +44,7 @@ class JacocoConventionPlugin implements Plugin<Project> {
         def taskName = "create${variantName}CombinedCoverageReport"
         def testTaskName = "test${variantName}UnitTest"
 
-        if (project.tasks.findByName(testTaskName) == null) {
+        if (!project.tasks.findByName(testTaskName)) {
           return
         }
 
@@ -54,41 +54,35 @@ class JacocoConventionPlugin implements Plugin<Project> {
           task.dependsOn testTaskName
 
           task.reports {
-            html.required = true
-            xml.required = true
+            html.required.set(true)
+            xml.required.set(true)
           }
 
-          task.sourceDirectories.from = project.files(
-            project.file("src/main/java"),
-            project.file("src/${variant.name}/java")
+          task.sourceDirectories.from(
+            project.files("src/main/java", "src/${variant.name}/java")
           )
 
-          // ---------- 修改点：排除规则微调 ----------
-          // 移除 `**/*Companion*`，避免误伤 Kotlin Companion Object 的覆盖统计
-          def exclusions = [
-            '**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*',
-            '**/*_Factory.class', '**/*_MembersInjector.class',
-            '**/Lambda$*.class', '**/Lambda.class', '**/*Lambda.class',
-            '**/*Module.*', '**/*Dagger*'
-          ]
-
-          // ---------- ★ 唯一修改点：使用 AGP 离线插桩后的类目录 ----------
-          // 原因：启用 testCoverageEnabled 后，单元测试实际执行的是插桩类
-          // 该类位于 intermediates/classes/<variant>/jacocoDebug，必须使用此目录
-          // 才能与 executionData 正确匹配
-          def jacocoClassesDir = project.layout.buildDirectory
-            .dir("intermediates/classes/${variant.name}/jacocoDebug")
+          // ✅ 官方正确路径：原始未插桩的 Kotlin 类
+          def originalClassesDir = project.layout.buildDirectory
+            .dir("tmp/kotlin-classes/${variant.name}")
             .get().asFile
 
-          task.classDirectories.from = project.files(
-            project.fileTree(dir: jacocoClassesDir, excludes: exclusions)
+          // ✅ 强制排除 Compose 生成类（解决你堆栈里的报错）
+          def exclusions = [
+            '**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*',
+            '**/ComposableSingletons$*.class', // 🔥 解决你报错的核心行
+            '**/*$Lambda$*.class',
+            '**/*_Factory.class', '**/*Dagger*', '**/*Module.*'
+          ]
+
+          task.classDirectories.from(
+            project.fileTree(dir: originalClassesDir, excludes: exclusions)
           )
 
-          // executionData 路径不变
           def execFile = project.layout.buildDirectory
             .file("outputs/unit_test_code_coverage/${variant.name}UnitTest/${testTaskName}.exec")
             .get().asFile
-          task.executionData.from = project.files(execFile)
+          task.executionData.from(project.files(execFile))
         }
       }
     }

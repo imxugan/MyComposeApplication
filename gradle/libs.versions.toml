@@ -17,6 +17,8 @@ material = "1.10.0"
 # OWASP 依赖漏洞检查插件版本
 owasp-dependency-check = "12.1.9"
 
+jacoco = "0.8.11"
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
