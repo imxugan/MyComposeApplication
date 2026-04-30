@@ -63,6 +63,11 @@ class OwaspConventionPlugin implements Plugin<Project> {
         // 🚀 CI 缓存核心
         directory = "/var/lib/jenkins/owasp-cache"
       }
+
+      // 引用 OWASP 官方维护的通用抑制清单
+      hostedSuppressions {
+        url = 'https://jeremylong.github.io/DependencyCheck/suppressions/publishedSuppressions.xml'
+      }
     }
   }
 }
