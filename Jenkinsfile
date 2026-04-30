@@ -50,28 +50,13 @@ pipeline {
                             --src-roots "src/main/java"
                     '''
 
-                    // 8. 全量覆盖率验证
-                    sh '''
-                        REPORT="app/build/reports/jacoco/createDebugCombinedCoverageReport/createDebugCombinedCoverageReport.xml"
-                        if [ ! -f "$REPORT" ]; then
-                            echo "❌ 未找到覆盖率报告"
-                            exit 1
-                        fi
-                        COVERED=$(grep -o '<counter type="LINE"[^>]*covered="[0-9]*"' "$REPORT" | grep -o 'covered="[0-9]*"' | grep -o '[0-9]*' | awk '{s+=$1} END{print s}')
-                        MISSED=$(grep -o '<counter type="LINE"[^>]*missed="[0-9]*"' "$REPORT" | grep -o 'missed="[0-9]*"' | grep -o '[0-9]*' | awk '{s+=$1} END{print s}')
-                        TOTAL=$((COVERED + MISSED))
-                        if [ $TOTAL -eq 0 ]; then
-                            echo "⚠️ 无代码可统计，跳过覆盖率检查"
-                            exit 0
-                        fi
-                        RATIO=$(echo "scale=4; $COVERED / $TOTAL" | bc)
-                        PERCENT=$(echo "scale=1; $RATIO * 100" | bc)
-                        echo "当前行覆盖率: ${PERCENT}%"
-                        if (( $(echo "$PERCENT < 80.0" | bc -l) )); then
-                            echo "❌ 覆盖率不达标，构建失败"
-                            exit 0   # 先不中断构建
-                        fi
-                    '''
+                    // 8. 发布覆盖率报告到 Jenkins JaCoCo 插件（自动生成项目页面入口和趋势图）
+                    //    同时包含 Kotlin 和 Java 编译目录，解决 Kotlin 类覆盖率为 0 的问题
+                    jacoco(
+                        execPattern: 'app/build/outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec',
+                        classPattern: 'app/build/tmp/kotlin-classes/debug/**, app/build/intermediates/javac/debug/classes/**',
+                        sourcePattern: 'app/src/main/java/**'
+                    )
 
                     // 9. 构建 Release 包
                     sh './gradlew assembleRelease'
