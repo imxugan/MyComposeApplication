@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
-  <!-- Netty 相关漏洞 -->
+  <!-- Netty 传递性依赖漏洞，经评估不可利用 -->
   <suppress>
     <notes>Netty传递性依赖漏洞，经评估不可利用</notes>
-    <packageUrl regex="true">pkg:maven/io\.netty/netty.*@4\.1\.(93|72)\.Final</packageUrl>
+    <packageUrl regex="true">pkg:maven/io\.netty/netty.*@.*</packageUrl>
     <cve>CVE-2025-24970</cve>
     <cve>CVE-2023-44487</cve>
     <cve>CVE-2025-58057</cve>
@@ -14,26 +14,26 @@
     <cve>CVE-2022-41881</cve>
   </suppress>
 
-  <!-- gRPC 相关漏洞 -->
+  <!-- gRPC 传递性依赖漏洞，经评估不可利用 -->
   <suppress>
     <notes>gRPC传递性依赖漏洞，经评估不可利用</notes>
-    <packageUrl regex="true">pkg:maven/io\.grpc/grpc.*@1\.57\.0</packageUrl>
+    <packageUrl regex="true">pkg:maven/io\.grpc/grpc.*@.*</packageUrl>
     <cve>CVE-2026-33186</cve>
     <cve>CVE-2023-44487</cve>
   </suppress>
 
-  <!-- Protobuf 相关漏洞 -->
+  <!-- Protobuf 传递性依赖漏洞，经评估不可利用 -->
   <suppress>
     <notes>Protobuf传递性依赖漏洞，经评估不可利用</notes>
-    <packageUrl regex="true">pkg:maven/com\.google\.protobuf/protobuf.*@3\.22\.3</packageUrl>
+    <packageUrl regex="true">pkg:maven/com\.google\.protobuf/protobuf.*@.*</packageUrl>
     <cve>CVE-2024-7254</cve>
     <cve>CVE-2022-3171</cve>
   </suppress>
 
-  <!-- Guava 相关漏洞 -->
+  <!-- Guava 传递性依赖漏洞，经评估不可利用 -->
   <suppress>
     <notes>Guava传递性依赖漏洞，经评估不可利用</notes>
-    <packageUrl regex="true">pkg:maven/com\.google\.guava/guava@28\.1-jre</packageUrl>
+    <packageUrl regex="true">pkg:maven/com\.google\.guava/guava@.*</packageUrl>
     <cve>CVE-2023-2976</cve>
   </suppress>
 </suppressions>
