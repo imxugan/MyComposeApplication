@@ -34,10 +34,10 @@ class OwaspConventionPlugin implements Plugin<Project> {
       // 仅当 suppression 文件存在时才配置，避免因文件缺失导致失败
       def suppressionFile = project.rootProject.file('owasp-suppression.xml')
       if (suppressionFile.exists()) {
-        println "✅ 成功加载本地抑制文件: ${suppressionFile.absolutePath}"
+        // println "✅ 成功加载本地抑制文件: ${suppressionFile.absolutePath}"
         suppressionFiles = [suppressionFile.path]
       } else {
-        println "⚠️ 警告：未找到本地抑制文件: ${suppressionFile.absolutePath}"
+        // println "⚠️ 警告：未找到本地抑制文件: ${suppressionFile.absolutePath}"
         // 文件不存在时，设置为空列表，避免插件报错
         suppressionFiles = []
       }
