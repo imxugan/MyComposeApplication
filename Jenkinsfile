@@ -38,7 +38,7 @@ pipeline {
                     // 5. 编译 Debug 包
                     sh './gradlew assembleDebug'
 
-                    // 6. 运行单元测试并生成覆盖率报告
+                    // 6. 运行单元测试并生成覆盖率报告（Gradle 侧完成所有分析）
                     sh './gradlew :app:createDebugCombinedCoverageReport --rerun-tasks'
 
                     // 7. 增量覆盖率检查
@@ -50,12 +50,12 @@ pipeline {
                             --src-roots "src/main/java"
                     '''
 
-                    // 8. 发布覆盖率报告到 Jenkins JaCoCo 插件（自动生成项目页面入口和趋势图）
-                    //    classPattern 仅使用原始 Kotlin 编译目录，避免插桩类导致插件崩溃
-                    jacoco(
-                        execPattern: 'app/build/outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec',
-                        classPattern: 'app/build/tmp/kotlin-classes/debug/**',  // ★ 移除插桩目录
-                        sourcePattern: 'app/src/main/java/**'
+                    // 8. 发布覆盖率趋势图（使用 Cobertura 解析 Gradle 生成的 XML，无需 class 路径）
+                    cobertura(
+                        coberturaReportFile: 'app/build/reports/jacoco/createDebugCombinedCoverageReport/createDebugCombinedCoverageReport.xml',
+                        onlyStable: false,
+                        failUnhealthy: false,
+                        failUnstable: false
                     )
 
                     // 9. 构建 Release 包
