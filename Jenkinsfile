@@ -112,7 +112,7 @@ pipeline {
                     reportName: 'OWASP Dependency-Check Report'
                 ]
             )
-            无论成功失败都清理工作区
+            // 无论成功失败都清理工作区
             cleanWs()
         }
     }
