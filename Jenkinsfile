@@ -50,20 +50,11 @@ pipeline {
                             --src-roots "src/main/java"
                     '''
 
-                    // 临时调试：确认 GreetingMessage 的 class 文件实际位置
-                    sh '''
-                        echo "=== 查找 GreetingMessage.class ==="
-                        find app/build -name "GreetingMessage*.class" -type f 2>/dev/null
-                        echo "=== exec 文件大小 ==="
-                        ls -l app/build/outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec
-                    '''
-
-
-                    // ★ 8. 发布覆盖率报告到 Jenkins JaCoCo 插件（自动生成项目页面入口和趋势图）
-                    //    同时包含 Kotlin 和 Java 编译目录，解决 Kotlin 类覆盖率为 0 的问题
+                    // 8. 发布覆盖率报告到 Jenkins JaCoCo 插件（自动生成项目页面入口和趋势图）
+                    //    classPattern 包含 Kotlin 编译目录与 AGP Jacoco 插桩目录
                     jacoco(
                         execPattern: 'app/build/outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec',
-                        classPattern: 'app/build/tmp/kotlin-classes/debug/**, app/build/intermediates/javac/debug/classes/**',
+                        classPattern: 'app/build/tmp/kotlin-classes/debug/**, app/build/intermediates/classes/debug/jacocoDebug/**',
                         sourcePattern: 'app/src/main/java/**'
                     )
 
