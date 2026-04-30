@@ -1,7 +1,7 @@
 package com.xg.mycomposeapplication
 
-import org.junit.Assert.assertEquals
 import org.junit.Test
+import org.junit.Assert.assertEquals
 
 class GreetingMessageTest {
 
@@ -22,5 +22,11 @@ class GreetingMessageTest {
     val longName = "A".repeat(100)
     val expected = "Hello greeing again ${"A".repeat(100)}!"
     assertEquals(expected, GreetingMessage.build(longName))
+  }
+
+  // 🔥 唯一新增：覆盖 test() 方法
+  @Test
+  fun test_executesWithoutError() {
+    GreetingMessage.test()
   }
 }
