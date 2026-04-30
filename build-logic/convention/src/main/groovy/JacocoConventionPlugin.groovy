@@ -7,7 +7,7 @@ class JacocoConventionPlugin implements Plugin<Project> {
   void apply(Project project) {
     project.pluginManager.apply('jacoco')
 
-    // 为非 Android 模块提供后备配置
+    // 非 Android 模块的后备配置
     project.tasks.withType(Test).configureEach { Test test ->
       test.jacoco {
         enabled = true
@@ -63,26 +63,37 @@ class JacocoConventionPlugin implements Plugin<Project> {
             project.file("src/${variant.name}/java")
           )
 
+          // ---------- 修改点：排除规则微调 ----------
+          // 移除 `**/*Companion*`，避免误伤 Kotlin Companion Object 的覆盖统计
           def exclusions = [
             '**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*',
             '**/*_Factory.class', '**/*_MembersInjector.class',
             '**/Lambda$*.class', '**/Lambda.class', '**/*Lambda.class',
-            '**/*Companion*', '**/*Module.*', '**/*Dagger*'
+            '**/*Module.*', '**/*Dagger*'
           ]
 
-          // 无条件注册 classDirectories（即使目录当前还不存在）
-          def classesDir = project.layout.buildDirectory
+          // ---------- 修改点：精确指定两类字节码目录 ----------
+          // 原因：AGP 8.x 将 Kotlin 和 Java 的字节码分别输出到以下两个目录
+          // - tmp/kotlin-classes/ : 存放 Kotlin 代码编译后的 .class 文件
+          // - intermediates/javac/ : 存放 Java 代码编译后的 .class 文件
+          // JaCoCo 必须同时包含这两个路径，才能统计所有代码的覆盖率
+
+          def kotlinClassesDir = project.layout.buildDirectory
             .dir("tmp/kotlin-classes/${variant.name}")
             .get().asFile
+          def javaClassesDir = project.layout.buildDirectory
+            .dir("intermediates/javac/${variant.name}/classes")
+            .get().asFile
+
           task.classDirectories.from = project.files(
-            project.fileTree(dir: classesDir, excludes: exclusions)
+            project.fileTree(dir: kotlinClassesDir, excludes: exclusions),
+            project.fileTree(dir: javaClassesDir, excludes: exclusions)
           )
 
-          // 执行数据文件路径（AGP 8.x 默认输出目录）
+          // executionData 路径不变
           def execFile = project.layout.buildDirectory
             .file("outputs/unit_test_code_coverage/${variant.name}UnitTest/${testTaskName}.exec")
             .get().asFile
-          // 无条件注册 executionData（.exec 文件由 dependsOn 任务在执行阶段生成）
           task.executionData.from = project.files(execFile)
         }
       }
