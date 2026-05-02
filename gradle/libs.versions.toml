@@ -61,11 +61,14 @@ kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 
 [plugins]
+# 声明当前模块是一个可直接安装运行的 Android 应用
 android-application = { id = "com.android.application", version.ref = "agp" }
+# 为 Android 项目启用 Kotlin 语言支持，将 Kotlin 编译器集成到 Android Gradle 构建流程中
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 
 # 全自动代码格式化插件（统一团队代码风格，支持Kotlin/Java/XML等）
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+# 声明当前模块是一个库模块
 android-library = { id = "com.android.library", version.ref = "agp" }
 
 

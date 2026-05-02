@@ -1,7 +1,7 @@
 package com.xg.mycomposeapplication
 
-import org.junit.Test
 import org.junit.Assert.assertEquals
+import org.junit.Test
 
 class GreetingMessageTest {
 
