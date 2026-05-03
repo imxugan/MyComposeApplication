@@ -24,6 +24,9 @@ pipeline {
                     // 1. 修复权限
                     sh 'chmod +x ./gradlew'
 
+                    // 仅清理 convention 模块，强制重新编译它
+                    sh "./gradlew :build-logic:convention:clean"
+
                     // 2. 代码格式检查（失败直接中断，触发 failure 邮件）
                     sh './gradlew spotlessCheck'
 
